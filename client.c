@@ -22,7 +22,7 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 
-#define PORT 1080
+#define PORT 9341
 #define BUF_LEN  2000
 #define STDIN 0
 #define SADDR "127.0.0.1"
