@@ -5,18 +5,13 @@
 
 #include "iniparser.h"
 
-int main(int argc, char * argv[])
+int main()
 {
-    dictionary * ini ;
-    char       * ini_name ;
+    dictionary *ini;
+    char       *ini_name;
     char *message, *port;
-    char *user1;
 
-    if (argc<2) {
-      ini_name = "server.ini";
-    } else {
-      ini_name = argv[1] ;
-    }
+    ini_name = "server.ini";
 
     ini = iniparser_load(ini_name);
     // iniparser_dump(ini, stdout);
@@ -26,10 +21,24 @@ int main(int argc, char * argv[])
     printf("Server PORT: %d \n", port);
     printf("Server Message: %s \n", message);
 
-    user1 = iniparser_getstring(ini, "users:99990", NULL);
-    printf("User One: %s \n", user1);
+    char *USER = "users:";
+    char *USER_NO = "99990";
+    char userToLookUp[80];
+    strcpy(userToLookUp, USER);
+    strcat(userToLookUp, USER_NO);
+    // printf("User to look up => %s \n", userToLookUp);
+
+    // char *userToLookUp = "users:99990";
+    int CHECK = iniparser_find_entry(ini, userToLookUp);
+    printf("CHECK: %d \n", CHECK);
+    char *pass = iniparser_getstring(ini, userToLookUp, NULL);
+    printf("User Pass: %s \n", pass);
+
+    // char *user1;
+    // user1 = iniparser_getstring(ini, "users:99990", NULL);
+    // printf("User One: %s \n", user1);
 
     iniparser_freedict(ini);
 
-    return 0 ;
+    return 0;
 }
