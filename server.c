@@ -3,6 +3,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <time.h>
 
 #include "iniparser.h"
 
@@ -23,10 +24,11 @@ int main() {
     char *message;
     int port;
     int FOUND_USER_FLAG = 0;
+    time_t timeVar;
+    struct tm * timeDetail;
+    timeDetail = localtime ( &timeVar );
 
     iniName = "server.ini";
-
-
     ini = iniparser_load(iniName);
     // iniparser_dump(ini, stdout);
 
@@ -35,6 +37,7 @@ int main() {
     printf("############################################## \n");
     printf("Server PORT: %d \n", port);
     printf("Server Message: %s \n", message);
+    printf("%s \n\n", asctime (timeDetail) );
     printf("############################################## \n\n\n");
 
     printf("Please write user details to authenticate in following format shown below \n");
