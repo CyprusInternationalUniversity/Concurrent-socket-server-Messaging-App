@@ -22,11 +22,7 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 
-<<<<<<< HEAD
 #define PORT 9341
-=======
-#define PORT 1080
->>>>>>> 2994fd4... Update client.c
 #define BUF_LEN  2000
 #define STDIN 0
 #define SADDR "127.0.0.1"
