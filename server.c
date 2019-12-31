@@ -61,7 +61,7 @@ int main() {
     return 0;
 }
 
-bool isAuthenticated(char *buffer, int size, int fd, char studentID[]) {
+bool isAuthenticated(char *buffer, int size, int fd) {
     int rcnt;
 
     dictionary *ini;
@@ -73,8 +73,6 @@ bool isAuthenticated(char *buffer, int size, int fd, char studentID[]) {
 
     // Remove next line at the end
     buffer[size-1]=0;
-    //there is always on extra char in socket buffer
-    int noOfCharacters = size - 1,i=0;
     // https://stackoverflow.com/questions/19803437/strtok-to-separate-all-whitespace
     char delim[] = " ";
 
@@ -168,10 +166,54 @@ void do_job(int fd)
     do {
         rcnt = send(fd, "Enter details in the following format <USER> <UserID> <Password>\n ",strlen("Enter details in the following format <USER> <UserID> <Password>\n"),0);
         rcnt = recv(fd, recvbuf, recvbuflen, 0);
-        is_authenticated = isAuthenticated(recvbuf, rcnt, fd, studentID);
+        is_authenticated = isAuthenticated(recvbuf, rcnt, fd);
     } while(!is_authenticated);
     //  After authenticate display message server
     displayWelcomeServer(true, fd, rcnt);
+    // show infinite time so that User can choose again and again
+    char userSelection = 0;
+    char userChoosed[1000];
+    while (1) {
+        rcnt = send(fd, "\nPlease choose your option NUMBER:\n", strlen("\nPlease choose your option NUMBER:\n"), 0);
+        rcnt = send(fd, "1 - Read/Delete Messages\n", strlen("1 - Read/Delete Messages\n"), 0);
+        rcnt = send(fd, "2 - Write Message to User\n", strlen("2 - Write Message to User\n"), 0);
+        rcnt = send(fd, "3 - Change config parameters\n", strlen("3 - Change config parameters\n"), 0);
+        rcnt = send(fd, "4 - Quit\n", strlen("4 - Quit\n"), 0);
+        rcnt = send(fd, "Option->", strlen("Option->"), 0);
+        rcnt = recv(fd, recvbuf, recvbuflen, 0);
+    
+        // printf("%s", recvbuf);
+        strncpy(userChoosed, recvbuf, 4);
+
+        if (strncasecmp(userChoosed,"1",4 ) == 0) 
+        {
+            userSelection = 1;
+        }
+        else if (strncasecmp(userChoosed,"2",4 ) == 0) 
+        {
+          userSelection = 2;
+        }
+        else if(strncasecmp(userChoosed,"3",4 ) == 0)
+        {
+            userSelection = 3;
+        }
+        else
+        {
+            userSelection = 4;
+        }
+        printf("userSelection = %s", userSelection);
+        switch (userSelection)
+        {
+        case 1:
+            printf("Send mesage to user");
+            break;
+        case 4:
+            rcnt = send(fd, "Bye!\n", strlen("Bye!\n"), 0);
+            return 0;
+        default:
+            break;
+        }
+    }
 
     // Receive until the peer shuts down the connection
     do {
